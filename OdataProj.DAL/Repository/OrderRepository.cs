@@ -9,11 +9,6 @@ namespace OdataProj.DAL.Repository
 {
     public class OrderRepository : GenericRepository<Product>, IOrderRepository
     {
-        private readonly DataContext _context;
-
-        public OrderRepository(DataContext context) : base(context)
-        {
-            _context = context;
-        }
+        public OrderRepository(DataContext context) : base(context) { }
     }
 }

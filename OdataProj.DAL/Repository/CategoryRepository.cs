@@ -9,11 +9,6 @@ namespace OdataProj.DAL.Repository
 {
     public class CategoryRepository : GenericRepository<Product>, ICategoryRepository
     {
-        private readonly DataContext _context;
-
-        public CategoryRepository(DataContext context) : base(context)
-        {
-            _context = context;
-        }
+        public CategoryRepository(DataContext context) : base(context) { }
     }
 }

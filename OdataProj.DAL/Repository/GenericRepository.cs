@@ -10,7 +10,7 @@ namespace OdataProj.DAL.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly DbContext _context;
-        private readonly DbSet<T> _dbSet;
+        public readonly DbSet<T> _dbSet;
 
         public GenericRepository(DbContext context)
         {

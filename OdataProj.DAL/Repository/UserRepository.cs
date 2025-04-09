@@ -9,11 +9,6 @@ namespace OdataProj.DAL.Repository
 {
     public class UserRepository : GenericRepository<Product>, IUserRepository
     {
-        private readonly DataContext _context;
-
-        public UserRepository(DataContext context) : base(context)
-        {
-            _context = context;
-        }
+        public UserRepository(DataContext context) : base(context) { }
     }
 }
