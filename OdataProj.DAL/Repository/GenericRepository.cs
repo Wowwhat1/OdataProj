@@ -7,75 +7,41 @@ using System.Threading.Tasks;
 
 namespace OdataProj.DAL.Repository
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly DbContext _context;
-        public readonly DbSet<T> _dbSet;
+        private readonly DbSet<TEntity> _dbSet;
 
         public GenericRepository(DbContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _dbSet = _context.Set<T>();
+            _context = context;
+            _dbSet = context.Set<TEntity>();
         }
 
-        public IQueryable<T> GetAll() => _dbSet.AsQueryable(); // 🔹 Supports OData Queries
-
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<TEntity?> GetByIdAsync(object id)
         {
-            try
-            {
-                return await _dbSet.FindAsync(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error retrieving entity with ID {id}: {ex.Message}", ex);
-            }
+            return await _dbSet.FindAsync(id);
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            try
-            {
-                if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-                await _dbSet.AddAsync(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error adding entity: {ex.Message}", ex);
-            }
+            return await _dbSet.ToListAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task AddAsync(TEntity entity)
         {
-            try
-            {
-                if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating entity: {ex.Message}", ex);
-            }
+            await _dbSet.AddAsync(entity);
         }
 
-        public async Task DeleteAsync(int id)
+        public void Update(TEntity entity)
         {
-            try
-            {
-                var entity = await GetByIdAsync(id);
-                if (entity == null) throw new Exception($"Entity with ID {id} not found.");
+            _dbSet.Update(entity);
+        }
 
-                _dbSet.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error deleting entity with ID {id}: {ex.Message}", ex);
-            }
+        public void Delete(TEntity entity)
+        {
+            _dbSet.Remove(entity);
         }
     }
+
 }
